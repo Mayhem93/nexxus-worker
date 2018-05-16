@@ -118,9 +118,11 @@ if command_exists "forever" ; then
 
 		if command_exists "bc"; then
 			total_ram=$(printf "%d" $(bc <<< "scale=2; ${total_ram}/1024*(3/4)") 2>/dev/null)
+		else
+			total_ram=$((total_ram/1024))
 		fi
 
-		eval "${env_vars_string} forever start --append --uid \"${type}${index}\" --colors -o ./logs/aggregation.out -e ./logs/aggregation.err -c \"node --nouse-idle-notification --max-old-space-size=${total_ram}\" ./index.js -t ${type} -i ${index}"
+		eval "${env_vars_string} forever start --append --uid \"${type}${index}\" --colors -o ./logs/${type}${index}.out -e ./logs/${type}${index}.err -c \"node --nouse-idle-notification --max-old-space-size=${total_ram}\" ./index.js -t ${type} -i ${index}"
 	fi
 else
 	echo "Unable to run script. Please install 'forever' npm package globally."
